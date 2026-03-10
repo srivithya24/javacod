@@ -1,31 +1,45 @@
-class Solution(object):
-    def isValid(self, s):
-        # A stack to keep track of opening brackets
-        stack = []
+import java.util.Stack;
+import java.util.HashMap;
+
+class Solution {
+    public boolean isValid(String s) {
+        // 1. Initialize the stack
+        Stack<Character> stack = new Stack<>();
         
-        # A map to easily match closing brackets to their opening counterparts
-        mapping = {")": "(", "}": "{", "]": "["}
+        // 2. Create the mapping for closing to opening brackets
+        HashMap<Character, Character> mapping = new HashMap<>();
+        mapping.put(')', '(');
+        mapping.put('}', '{');
+        mapping.put(']', '[');
 
-        for char in s:
-            # If the character is a closing bracket
-            if char in mapping:
-                # Pop the top element from stack if it's not empty, otherwise use a dummy
-                top_element = stack.pop() if stack else '#'
-                
-                # Check if the popped opening bracket matches the required mapping
-                if mapping[char] != top_element:
-                    return False
-            else:
-                # If it's an opening bracket, push it onto the stack
-                stack.append(char)
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
 
-        # If the stack is empty, all brackets were matched correctly
-        return not stack
+            // 3. If the character is a closing bracket
+            if (mapping.containsKey(c)) {
+                // Get the top element of the stack. If empty, use a dummy value
+                char topElement = stack.isEmpty() ? '#' : stack.pop();
 
-# Example usage to verify the cases:
-sol = Solution()
-print(sol.isValid("()"))      # True
-print(sol.isValid("()[]{}"))  # True
-print(sol.isValid("(]"))      # False
-print(sol.isValid("([])"))    # True
-print(sol.isValid("([)]"))    # False
+                // If the mapping doesn't match the popped element, return false
+                if (topElement != mapping.get(c)) {
+                    return false;
+                }
+            } else {
+                // 4. If it's an opening bracket, push it onto the stack
+                stack.push(c);
+            }
+        }
+
+        // 5. If the stack is empty, it's valid
+        return stack.isEmpty();
+    }
+
+    public static void main(String[] args) {
+        Solution sol = new Solution();
+        System.out.println(sol.isValid("()"));      // true
+        System.out.println(sol.isValid("()[]{}"));  // true
+        System.out.println(sol.isValid("(]"));      // false
+        System.out.println(sol.isValid("([])"));    // true
+        System.out.println(sol.isValid("([)]"));    // false
+    }
+}
